@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block title %}Results - PyTorch Training Framework{% endblock %}
+{% block content %}
+<div class="results-container">
+    <h1>Training Results</h1>
+    {% if result %}
+    <div class="result-header">
+        <div class="result-card">
+            <h3>Model Summary</h3>
+            <pre class="model-summary">{{ result.model_summary }}</pre>
+        </div>
+        <div class="result-card">
+            <h3>Final Evaluation</h3>
+            <div class="eval-metrics">
+                <div class="metric-item">
+                    <span class="metric-label">Loss</span>
+                    <span class="metric-value">{{ "%.4f" % result.evaluation.loss }}</span>
+                </div>
+                <div class="metric-item">
+                    <span class="metric-label">Accuracy</span>
+                    <span class="metric-value">{{ "%.2f" % (result.evaluation.accuracy * 100) }}%</span>
+                </div>
+                <div class="metric-item">
+                    <span class="metric-label">Samples</span>
+                    <span class="metric-value">{{ result.evaluation.num_samples }}</span>
+                </div>
+            </div>
+        </div>
+        <div class="result-card">
+            <h3>Model Info</h3>
+            <p>Model File: <code>{{ result.model_path }}</code></p>
+            <p>Classes: {{ result.num_classes }}</p>
+            <p>Class Names: {{ result.class_names | join(', ') }}</p>
+        </div>
+    </div>
+    <div class="result-section">
+        <h3>Training History</h3>
+        <table class="history-table">
+            <thead>
+                <tr>
+                    <th>Epoch</th>
+                    <th>Train Loss</th>
+                    <th>Val Loss</th>
+                    <th>Train Accuracy</th>
+                    <th>Val Accuracy</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for i in range(result.history.train_loss | length) %}
+                <tr>
+                    <td>{{ i + 1 }}</td>
+                    <td>{{ "%.4f" % result.history.train_loss[i] }}</td>
+                    <td>{{ "%.4f" % result.history.val_loss[i] if result.history.val_loss[i] else 'N/A' }}</td>
+                    <td>{{ "%.2f" % (result.history.train_accuracy[i] * 100) }}%</td>
+                    <td>{{ "%.2f" % (result.history.val_accuracy[i] * 100) if result.history.val_accuracy[i] else 'N/A' }}%</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <p>No training results to display.</p>
+        <p><a href="/train" class="btn btn-primary">Start Training</a></p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

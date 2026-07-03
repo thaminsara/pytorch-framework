@@ -1,0 +1,30 @@
+defaults:
+  device: "auto"
+  seed: 42
+  precision: "float32"
+
+paths:
+  data_dir: "./data"
+  models_dir: "./models"
+  experiments_dir: "./experiments"
+  plots_dir: "./gui/static/plots"
+
+training:
+  batch_size: 32
+  epochs: 10
+  learning_rate: 0.001
+  optimizer: "adam"
+  weight_decay: 0.0001
+  scheduler: null
+  gradient_clip: null
+  mixed_precision: false
+
+model:
+  input_shape: [3, 224, 224]
+  num_classes: 10
+
+visualization:
+  plot_backend: "matplotlib"
+  save_plots: true
+  plot_format: "png"
+  dpi: 150

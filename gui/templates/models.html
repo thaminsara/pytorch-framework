@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}Models - PyTorch Training Framework{% endblock %}
+{% block content %}
+<h1>Saved Models</h1>
+<div class="model-grid">
+    {% if saved_models %}
+        {% for model in saved_models %}
+        <div class="model-card">
+            <h3>{{ model.name }}</h3>
+            <p class="model-meta">
+                <span>Size: {{ "%.2f" % (model.size / 1024 / 1024) }} MB</span>
+                <span>Modified: {{ model.modified }}</span>
+            </p>
+            <div class="model-actions">
+                <a href="/predict?model={{ model.name }}" class="btn btn-small">Predict</a>
+                <button class="btn btn-small btn-danger" onclick="deleteModel('{{ model.name }}')">Delete</button>
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+        <p class="empty-state">No saved models yet. <a href="/train">Start training</a> to create one.</p>
+    {% endif %}
+</div>
+<div class="prediction-section" id="prediction-section" style="display:none;">
+    <h2>Predict with Model</h2>
+    <div class="upload-area" id="upload-area">
+        <input type="file" id="image-input" accept="image/*">
+        <label for="image-input" class="upload-label">Click to upload an image</label>
+    </div>
+    <div id="prediction-result"></div>
+</div>
+{% endblock %}
+{% block extra_scripts %}
+<script>
+function deleteModel(name) {
+    if (confirm('Delete model ' + name + '?')) {
+        fetch('/models/delete', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({name: name})
+        }).then(r => r.json()).then(data => {
+            if (data.success) location.reload();
+        });
+    }
+}
+</script>
+{% endblock %}

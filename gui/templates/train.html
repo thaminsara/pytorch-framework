@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+{% block title %}Train Model - PyTorch Training Framework{% endblock %}
+{% block content %}
+<div class="train-container">
+    <h1>Build and Train Model</h1>
+    <form id="train-form">
+        <div class="form-section">
+            <h2>Dataset Configuration</h2>
+            <div class="form-group">
+                <label for="dataset">Dataset</label>
+                <select id="dataset" name="dataset">
+                    <option value="cifar10" selected>CIFAR-10</option>
+                    <option value="cifar100">CIFAR-100</option>
+                    <option value="mnist">MNIST</option>
+                    <option value="fashionmnist">Fashion-MNIST</option>
+                    <option value="svhn">SVHN</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="batch_size">Batch Size</label>
+                <input type="number" id="batch_size" name="batch_size" value="32" min="1" max="1024">
+            </div>
+        </div>
+        <div class="form-section">
+            <h2>Training Hyperparameters</h2>
+            <div class="form-group">
+                <label for="epochs">Epochs</label>
+                <input type="number" id="epochs" name="epochs" value="10" min="1" max="1000">
+            </div>
+            <div class="form-group">
+                <label for="learning_rate">Learning Rate</label>
+                <input type="number" id="learning_rate" name="learning_rate" value="0.001" step="0.0001" min="0.00001">
+            </div>
+            <div class="form-group">
+                <label for="optimizer">Optimizer</label>
+                <select id="optimizer" name="optimizer">
+                    {% for opt in optimizers %}
+                    <option value="{{ opt }}" {% if opt == 'adam' %}selected{% endif %}>{{ opt|title }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="scheduler">Learning Rate Scheduler</label>
+                <select id="scheduler" name="scheduler">
+                    <option value="none" selected>None</option>
+                    {% for sched in schedulers %}
+                    <option value="{{ sched }}">{{ sched|title }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="loss">Loss Function</label>
+                <select id="loss" name="loss">
+                    {% for loss in losses %}
+                    <option value="{{ loss }}" {% if loss == 'cross_entropy' %}selected{% endif %}>{{ loss|title }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <div class="form-section">
+            <h2>Model Architecture</h2>
+            <div class="layer-builder" id="layer-builder">
+                <div class="layer-row" id="layer-row-template">
+                    <select class="layer-type-select">
+                        {% for layer in layers %}
+                        <option value="{{ layer }}">{{ layer }}</option>
+                        {% endfor %}
+                    </select>
+                    <button type="button" class="btn btn-danger btn-small" onclick="removeLayer(this)">Remove</button>
+                </div>
+                <div id="layers-container"></div>
+                <button type="button" class="btn btn-secondary" onclick="addLayer()">Add Layer</button>
+            </div>
+            <div class="form-group">
+                <label>
+                    <input type="checkbox" id="use_pretrained" name="use_pretrained">
+                    Use Pretrained Model (torchvision)
+                </label>
+                <select id="pretrained_model" name="pretrained_model" style="display:none;">
+                    <option value="resnet18">ResNet-18</option>
+                    <option value="resnet34">ResNet-34</option>
+                    <option value="resnet50">ResNet-50</option>
+                    <option value="vgg16">VGG-16</option>
+                    <option value="mobilenet_v3_small">MobileNet V3 Small</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary btn-large">Start Training</button>
+            <button type="button" class="btn btn-secondary" onclick="buildModelPreview()">Preview Model</button>
+        </div>
+    </form>
+    <div id="training-status" style="display:none;">
+        <h2>Training Progress</h2>
+        <div class="progress-bar">
+            <div class="progress-fill" id="progress-fill"></div>
+        </div>
+        <p id="status-text">Initializing...</p>
+        <div id="logs-container"></div>
+    </div>
+</div>
+{% endblock %}
+{% block extra_scripts %}
+<script src="{{ url_for('static', filename='js/app.js') }}"></script>
+<script>
+document.getElementById('use_pretrained').addEventListener('change', function() {
+    document.getElementById('pretrained_model').style.display = this.checked ? 'block' : 'none';
+    document.getElementById('layer-builder').style.display = this.checked ? 'none' : 'block';
+});
+document.getElementById('train-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    startTraining();
+});
+</script>
+{% endblock %}

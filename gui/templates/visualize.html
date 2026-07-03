@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% block title %}Visualize - PyTorch Training Framework{% endblock %}
+{% block content %}
+<div class="visualize-container">
+    <h1>Training Visualization</h1>
+    <div class="experiment-selector">
+        <label for="experiment-select">Select Experiment:</label>
+        <select id="experiment-select" onchange="loadExperiment(this.value)">
+            <option value="">-- Select an experiment --</option>
+            {% for exp_id in all_results %}
+            <option value="{{ exp_id }}" {% if exp_id == experiment_id %}selected{% endif %}>
+                Experiment {{ exp_id[:8] }}...
+            </option>
+            {% endfor %}
+        </select>
+    </div>
+    {% if result %}
+    <div class="plots-grid">
+        {% if result.plots.loss_curves %}
+        <div class="plot-card">
+            <h3>Loss Curves</h3>
+            <img src="{{ url_for('serve_plot', filename=result.plots.loss_curves) }}" alt="Loss Curves">
+        </div>
+        {% endif %}
+        {% if result.plots.accuracy_curves %}
+        <div class="plot-card">
+            <h3>Accuracy Curves</h3>
+            <img src="{{ url_for('serve_plot', filename=result.plots.accuracy_curves) }}" alt="Accuracy Curves">
+        </div>
+        {% endif %}
+        {% if result.plots.confusion_matrix %}
+        <div class="plot-card">
+            <h3>Confusion Matrix</h3>
+            <img src="{{ url_for('serve_plot', filename=result.plots.confusion_matrix) }}" alt="Confusion Matrix">
+        </div>
+        {% endif %}
+        {% if result.plots.architecture %}
+        <div class="plot-card">
+            <h3>Model Architecture</h3>
+            <img src="{{ url_for('serve_plot', filename=result.plots.architecture) }}" alt="Model Architecture">
+        </div>
+        {% endif %}
+        {% if result.plots.learning_rate %}
+        <div class="plot-card">
+            <h3>Learning Rate Schedule</h3>
+            <img src="{{ url_for('serve_plot', filename=result.plots.learning_rate) }}" alt="Learning Rate">
+        </div>
+        {% endif %}
+        {% if result.plots.epoch_times %}
+        <div class="plot-card">
+            <h3>Epoch Times</h3>
+            <img src="{{ url_for('serve_plot', filename=result.plots.epoch_times) }}" alt="Epoch Times">
+        </div>
+        {% endif %}
+    </div>
+    <div class="metrics-summary">
+        <h3>Training Metrics Summary</h3>
+        <div class="metrics-grid">
+            <div class="metric-item">
+                <span class="metric-label">Final Train Loss</span>
+                <span class="metric-value">{{ "%.4f" % result.history.train_loss[-1] if result.history.train_loss else 'N/A' }}</span>
+            </div>
+            <div class="metric-item">
+                <span class="metric-label">Final Val Loss</span>
+                <span class="metric-value">{{ "%.4f" % result.history.val_loss[-1] if result.history.val_loss else 'N/A' }}</span>
+            </div>
+            <div class="metric-item">
+                <span class="metric-label">Final Train Accuracy</span>
+                <span class="metric-value">{{ "%.2f" % (result.history.train_accuracy[-1] * 100) if result.history.train_accuracy else 'N/A' }}%</span>
+            </div>
+            <div class="metric-item">
+                <span class="metric-label">Final Val Accuracy</span>
+                <span class="metric-value">{{ "%.2f" % (result.history.val_accuracy[-1] * 100) if result.history.val_accuracy else 'N/A' }}%</span>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <p>Select an experiment from the dropdown above to view visualizations.</p>
+        <p><a href="/train" class="btn btn-primary">Start a New Training</a></p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+{% block extra_scripts %}
+<script>
+function loadExperiment(expId) {
+    if (expId) window.location.href = '/visualize?experiment_id=' + expId;
+}
+</script>
+{% endblock %}

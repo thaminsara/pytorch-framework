@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}PyTorch Training Framework{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-brand">PyTorch Framework</div>
+        <ul class="nav-links">
+            <li><a href="/" class="{% if request.endpoint == 'index' %}active{% endif %}">Home</a></li>
+            <li><a href="/models" class="{% if request.endpoint == 'models' %}active{% endif %}">Models</a></li>
+            <li><a href="/train" class="{% if request.endpoint == 'train' %}active{% endif %}">Train</a></li>
+            <li><a href="/visualize" class="{% if request.endpoint == 'visualize' %}active{% endif %}">Visualize</a></li>
+            <li><a href="/results" class="{% if request.endpoint == 'results' %}active{% endif %}">Results</a></li>
+        </ul>
+    </nav>
+    <main class="container">
+        {% block content %}{% endblock %}
+    </main>
+    <footer class="footer">
+        <p>PyTorch Training Framework - Built with Python, Flask, and PyTorch</p>
+    </footer>
+    {% block extra_scripts %}{% endblock %}
+</body>
+</html>

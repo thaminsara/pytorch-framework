@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}Home - PyTorch Training Framework{% endblock %}
+{% block content %}
+<div class="hero">
+    <h1>PyTorch Training Framework</h1>
+    <p class="subtitle">Build, train, and visualize deep learning models from scratch</p>
+</div>
+<div class="features">
+    <div class="feature-card">
+        <h3>Custom Model Builder</h3>
+        <p>Design neural networks with a visual layer builder. Choose from 20+ layer types including Linear, Conv2D, LSTM, Transformer, and more.</p>
+        <a href="/train" class="btn btn-primary">Build Model</a>
+    </div>
+    <div class="feature-card">
+        <h3>Training Engine</h3>
+        <p>Train models with support for multiple optimizers, learning rate schedulers, loss functions, and callbacks like EarlyStopping.</p>
+        <a href="/train" class="btn btn-primary">Start Training</a>
+    </div>
+    <div class="feature-card">
+        <h3>Visualization</h3>
+        <p>Real-time visualization of training metrics, loss curves, accuracy curves, confusion matrices, and model architectures.</p>
+        <a href="/visualize" class="btn btn-primary">View Plots</a>
+    </div>
+    <div class="feature-card">
+        <h3>Model Zoo</h3>
+        <p>Browse pretrained models from torchvision or load your own saved models for fine-tuning or inference.</p>
+        <a href="/models" class="btn btn-primary">Browse Models</a>
+    </div>
+</div>
+<div class="info-section">
+    <h2>Quick Start</h2>
+    <ol>
+        <li><strong>Build</strong> your custom model using the visual layer builder</li>
+        <li><strong>Configure</strong> training parameters (optimizer, loss, scheduler)</li>
+        <li><strong>Train</strong> your model with real-time progress tracking</li>
+        <li><strong>Visualize</strong> results with interactive plots and metrics</li>
+        <li><strong>Save</strong> your trained models for later use</li>
+    </ol>
+</div>
+{% endblock %}
